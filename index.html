@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de ArgentCoin</title>
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+  <header>
+    <div id="logo">ArgentCoin</div>
+    <nav>
+      <button onclick="cambiarColorFondo()">Cambiar color</button>
+      <button onclick="abrirSeccion('perfil')">Perfil</button>
+      <button onclick="abrirSeccion('paginas')">Páginas</button>
+      <button onclick="abrirSeccion('publicaciones')">Publicar</button>
+      <button onclick="abrirSeccion('analiticas')">Estadísticas</button>
+      <button onclick="abrirSeccion('monetizacion')">Monetización</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="perfil" class="seccion">
+      <h2>Perfil personal</h2>
+      <p>Configura tu foto, portada, biografía y datos.</p>
+    </section>
+
+    <section id="paginas" class="seccion oculto">
+      <h2>Páginas y grupos</h2>
+      <p>Crea y gestiona tus páginas o grupos.</p>
+    </section>
+
+    <section id="publicaciones" class="seccion oculto">
+      <h2>Crear publicación</h2>
+      <form id="formPublicacion">
+        <input type="text" placeholder="Título..." required><br>
+        <textarea placeholder="Escribe tu contenido..." required></textarea><br>
+        <input type="file" accept="image/*"><br>
+        <button type="submit">Publicar</button>
+      </form>
+    </section>
+
+    <section id="analiticas" class="seccion oculto">
+      <h2>Estadísticas y Rendimiento</h2>
+      <p>Visualiza el alcance, interacciones y datos.</p>
+    </section>
+
+    <section id="monetizacion" class="seccion oculto">
+      <h2>Monetización</h2>
+      <p>Activa funciones de ingresos para tu contenido.</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>ArgentCoin Panel - Todos los derechos reservados</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

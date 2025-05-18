@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bitcoin Argentino</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <img id="logo" src="assets/logo.png" alt="Logo" />
+      <h1 id="main-title">Bitcoin Argentino</h1>
+      <p id="bio">La criptomoneda argentina con seguridad y respaldo para los más vulnerables.</p>
+    </header>
+
+    <section class="editor">
+      <h2>Personaliza tu panel</h2>
+      <label for="logo-input">Cambiar logo:</label>
+      <input type="file" id="logo-input" accept="image/*" />
+
+      <label for="title-input">Título:</label>
+      <input type="text" id="title-input" placeholder="Bitcoin Argentino" />
+
+      <label for="bio-input">Descripción:</label>
+      <textarea id="bio-input" rows="3"></textarea>
+
+      <label for="email-input">Correo:</label>
+      <input type="email" id="email-input" placeholder="correo@ejemplo.com" />
+
+      <label for="bg-color">Color de fondo:</label>
+      <input type="color" id="bg-color" value="#0e0e0e" />
+
+      <label for="text-color">Color del texto:</label>
+      <input type="color" id="text-color" value="#ffffff" />
+
+      <button onclick="applyChanges()">Aplicar cambios</button>
+    </section>
+
+    <footer>
+      <p>Contacto: <span id="email">correo@ejemplo.com</span></p>
+    </footer>
+  </div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>

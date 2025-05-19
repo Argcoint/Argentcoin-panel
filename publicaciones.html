@@ -7,7 +7,7 @@
     body {
       font-family: Arial, sans-serif;
       background-color: #111;
-      color: white;
+      color: #eee;
       padding: 20px;
     }
     .container {
@@ -17,31 +17,34 @@
     textarea {
       width: 100%;
       height: 100px;
-      margin-bottom: 10px;
+      padding: 10px;
       font-size: 16px;
+      border-radius: 5px;
+      border: none;
+      resize: none;
     }
     button {
       padding: 10px 20px;
+      margin-top: 10px;
       font-size: 16px;
       background-color: #00c896;
-      color: black;
       border: none;
+      color: white;
       cursor: pointer;
+      border-radius: 5px;
     }
     .post {
       background-color: #222;
       padding: 10px;
-      margin-top: 10px;
+      margin-top: 15px;
       border-left: 4px solid #00c896;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>ArgentCoin - Panel de Publicaciones</h1>
-  </header>
-
   <div class="container">
+    <h1>ArgentCoin - Panel de Publicaciones</h1>
+
     <h3>Crear una publicación</h3>
     <textarea id="contenido" placeholder="Escribe tu publicación..."></textarea>
     <button onclick="publicar()">Publicar</button>
@@ -52,40 +55,46 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    const supabaseUrl = 'https://jhmstzwzjfpzvhuzygmt.supabase.co'
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpobXN0end6amZwenZodXp5Z210Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc2MTMyNDYsImV4cCI6MjA2MzE4OTI0Nn0.zUUO0TdRjcajt4MZT2osCVQiqMYzBym7cR1pZLWDQjs'
-    const supabase = supabase.createClient(supabaseUrl, supabaseKey)
+    const supabaseUrl = 'https://jhmstzwzjfpzvhuzygmt.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpobXN0end6amZwenZodXp5Z210Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc2MTMyNDYsImV4cCI6MjA2MzE4OTI0Nn0.zUUO0TdRjcajt4MZT2osCVQiqMYzBym7cR1pZLWDQjs';
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
     async function publicar() {
-      const contenido = document.getElementById('contenido').value
-      if (contenido.trim() === '') return alert('Escribe algo para publicar.')
+      const contenido = document.getElementById('contenido').value;
+      if (contenido.trim() === '') return alert('Escribe algo para publicar.');
 
       const { error } = await supabase
-        .from('Publicaciones')
-        .insert([{ contenido }])
+        .from('"Publicaciones"')
+        .insert([{ contenido }]);
 
-      if (error) return alert('Error al publicar: ' + error.message)
+      if (error) {
+        alert('Error al publicar: ' + error.message);
+        return;
+      }
 
-      document.getElementById('contenido').value = ''
-      obtenerPublicaciones()
+      document.getElementById('contenido').value = '';
+      obtenerPublicaciones();
     }
 
     async function obtenerPublicaciones() {
       const { data, error } = await supabase
-        .from('Publicaciones')
+        .from('"Publicaciones"')
         .select('*')
-        .order('id', { ascending: false })
+        .order('id', { ascending: false });
 
-      if (error) return console.error('Error al obtener publicaciones', error)
+      if (error) return console.error('Error al obtener publicaciones', error);
 
-      const contenedor = document.getElementById('publicaciones')
-      contenedor.innerHTML = ''
+      const contenedor = document.getElementById('publicaciones');
+      contenedor.innerHTML = '';
       data.forEach(pub => {
-        const div = document.createElement('div')
-        div.className = 'post'
-        div.textContent = pub.contenido
-        contenedor.appendChild(div)
-      obtenerPublicaciones();
+        const div = document.createElement('div');
+        div.className = 'post';
+        div.textContent = pub.contenido;
+        contenedor.appendChild(div);
+      });
+    }
+
+    obtenerPublicaciones();
   </script>
 </body>
 </html>

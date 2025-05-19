@@ -1,7 +1,6 @@
-<!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html><html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>ArgentCoin - Publicaciones</title>
   <style>
     body {
@@ -17,84 +16,133 @@
     textarea {
       width: 100%;
       height: 100px;
-      padding: 10px;
+      margin-bottom: 10px;
       font-size: 16px;
-      border-radius: 5px;
-      border: none;
-      resize: none;
+    }
+    input[type="text"] {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 8px;
+      font-size: 16px;
     }
     button {
       padding: 10px 20px;
-      margin-top: 10px;
-      font-size: 16px;
       background-color: #00c896;
+      color: #fff;
       border: none;
-      color: white;
       cursor: pointer;
-      border-radius: 5px;
+      margin-top: 10px;
     }
     .post {
       background-color: #222;
       padding: 10px;
-      margin-top: 15px;
+      margin-top: 10px;
       border-left: 4px solid #00c896;
+    }
+    .post-header {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .delete-btn {
+      background-color: red;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      margin-top: 5px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>ArgentCoin - Panel de Publicaciones</h1>
-
     <h3>Crear una publicación</h3>
+    <input type="text" id="usuario" placeholder="Tu nombre o usuario">
+    <input type="text" id="imagen" placeholder="URL de imagen (opcional)">
     <textarea id="contenido" placeholder="Escribe tu publicación..."></textarea>
-    <button onclick="publicar()">Publicar</button>
+    <button onclick="publicar()">Publicar</button><h3 style="margin-top: 30px;">Publicaciones recientes</h3>
+<div id="publicaciones"></div>
 
-    <h3 style="margin-top: 30px;">Publicaciones recientes</h3>
-    <div id="publicaciones"></div>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    const supabaseUrl = 'https://jhmstzwzjfpzvhuzygmt.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpobXN0end6amZwenZodXp5Z210Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc2MTMyNDYsImV4cCI6MjA2MzE4OTI0Nn0.zUUO0TdRjcajt4MZT2osCVQiqMYzBym7cR1pZLWDQjs';
-    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+  </div>  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>  <script>
+    const supabaseUrl = 'https://jhmstzwzjfpzvhuzygmt.supabase.co'
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpobXN0end6amZwenZodXp5Z210Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc2MTMyNDYsImV4cCI6MjA2MzE4OTI0Nn0.zUUO0TdRjcajt4MZT2osCVQiqMYzBym7cR1pZLWDQjs'
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey)
 
     async function publicar() {
-      const contenido = document.getElementById('contenido').value;
-      if (contenido.trim() === '') return alert('Escribe algo para publicar.');
+      const contenido = document.getElementById('contenido').value
+      const usuario = document.getElementById('usuario').value
+      const imagen = document.getElementById('imagen').value
 
-      const { error } = await supabase
-        .from('"Publicaciones"')
-        .insert([{ contenido }]);
-
-      if (error) {
-        alert('Error al publicar: ' + error.message);
-        return;
+      if (contenido.trim() === '' || usuario.trim() === '') {
+        return alert('Completa todos los campos obligatorios.')
       }
 
-      document.getElementById('contenido').value = '';
-      obtenerPublicaciones();
+      const { error } = await supabase
+        .from('Publicaciones')
+        .insert([{ contenido, usuario, imagen }])
+
+      if (error) return alert('Error al publicar: ' + error.message)
+
+      document.getElementById('contenido').value = ''
+      document.getElementById('usuario').value = ''
+      document.getElementById('imagen').value = ''
+      obtenerPublicaciones()
+    }
+
+    async function eliminar(id) {
+      const { error } = await supabase
+        .from('Publicaciones')
+        .delete()
+        .eq('id', id)
+
+      if (error) return alert('Error al eliminar: ' + error.message)
+      obtenerPublicaciones()
     }
 
     async function obtenerPublicaciones() {
       const { data, error } = await supabase
-        .from('"Publicaciones"')
+        .from('Publicaciones')
         .select('*')
-        .order('id', { ascending: false });
+        .order('id', { ascending: false })
 
-      if (error) return console.error('Error al obtener publicaciones', error);
+      if (error) return console.error('Error al obtener publicaciones', error)
 
-      const contenedor = document.getElementById('publicaciones');
-      contenedor.innerHTML = '';
+      const contenedor = document.getElementById('publicaciones')
+      contenedor.innerHTML = ''
+
       data.forEach(pub => {
-        const div = document.createElement('div');
-        div.className = 'post';
-        div.textContent = pub.contenido;
-        contenedor.appendChild(div);
-      });
+        const div = document.createElement('div')
+        div.className = 'post'
+
+        const header = document.createElement('div')
+        header.className = 'post-header'
+        header.textContent = `${pub.usuario}`
+
+        const text = document.createElement('div')
+        text.textContent = pub.contenido
+
+        if (pub.imagen) {
+          const img = document.createElement('img')
+          img.src = pub.imagen
+          img.alt = 'imagen'
+          img.style.maxWidth = '100%'
+          img.style.marginTop = '5px'
+          div.appendChild(img)
+        }
+
+        const borrar = document.createElement('button')
+        borrar.textContent = 'Eliminar'
+        borrar.className = 'delete-btn'
+        borrar.onclick = () => eliminar(pub.id)
+
+        div.appendChild(header)
+        div.appendChild(text)
+        div.appendChild(borrar)
+
+        contenedor.appendChild(div)
+      })
     }
 
-    obtenerPublicaciones();
-  </script>
-</body>
+    obtenerPublicaciones()
+  </script></body>
 </html>

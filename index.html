@@ -1,60 +1,62 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel de ArgentCoin</title>
-  <link rel="stylesheet" href="estilos.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ArgentCoin Panel</title>
 </head>
 <body>
-  <header>
-    <div id="logo">ArgentCoin</div>
-    <nav>
-      <button onclick="cambiarColorFondo()">Cambiar color</button>
-      <button onclick="abrirSeccion('perfil')">Perfil</button>
-      <button onclick="abrirSeccion('paginas')">Páginas</button>
-      <button onclick="abrirSeccion('publicaciones')">Publicar</button>
-      <button onclick="abrirSeccion('analiticas')">Estadísticas</button>
-      <button onclick="abrirSeccion('monetizacion')">Monetización</button>
-    </nav>
-  </header>
+  <h1>Panel de Publicaciones - ArgentCoin</h1>
+  <form id="publicacion-form">
+    <input type="text" id="titulo" placeholder="Título" required /><br />
+    <textarea id="contenido" placeholder="Contenido" required></textarea><br />
+    <button type="submit">Publicar</button>
+  </form>
+  <div id="publicaciones"></div>
 
-  <main>
-    <section id="perfil" class="seccion">
-      <h2>Perfil personal</h2>
-      <p>Configura tu foto, portada, biografía y datos.</p>
-    </section>
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-    <section id="paginas" class="seccion oculto">
-      <h2>Páginas y grupos</h2>
-      <p>Crea y gestiona tus páginas o grupos.</p>
-    </section>
+    const supabase = createClient(
+      'https://jhmstzwzjfpzvhuzygmt.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpobXN0end6amZwenZodXp5Z210Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc2MTMyNDYsImV4cCI6MjA2MzE4OTI0Nn0.zUUO0TdRjcajt4MZT2osCVQiqMYzBym7cR1pZLWDQjs'
+    );
 
-    <section id="publicaciones" class="seccion oculto">
-      <h2>Crear publicación</h2>
-      <form id="formPublicacion">
-        <input type="text" placeholder="Título..." required><br>
-        <textarea placeholder="Escribe tu contenido..." required></textarea><br>
-        <input type="file" accept="image/*"><br>
-        <button type="submit">Publicar</button>
-      </form>
-    </section>
+    const form = document.getElementById("publicacion-form");
+    const publicacionesDiv = document.getElementById("publicaciones");
 
-    <section id="analiticas" class="seccion oculto">
-      <h2>Estadísticas y Rendimiento</h2>
-      <p>Visualiza el alcance, interacciones y datos.</p>
-    </section>
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const titulo = document.getElementById("titulo").value;
+      const contenido = document.getElementById("contenido").value;
 
-    <section id="monetizacion" class="seccion oculto">
-      <h2>Monetización</h2>
-      <p>Activa funciones de ingresos para tu contenido.</p>
-    </section>
-  </main>
+      const { data, error } = await supabase.from("publicaciones").insert([{ titulo, contenido }]);
+      if (error) {
+        alert("Error al publicar");
+        console.error(error);
+      } else {
+        alert("Publicado con éxito");
+        form.reset();
+        mostrarPublicaciones();
+      }
+    });
 
-  <footer>
-    <p>ArgentCoin Panel - Todos los derechos reservados</p>
-  </footer>
+    async function mostrarPublicaciones() {
+      const { data: publicaciones, error } = await supabase.from("publicaciones").select("*").order("id", { ascending: false });
+      if (error) {
+        console.error("Error al cargar publicaciones:", error);
+        return;
+      }
+      publicacionesDiv.innerHTML = "";
+      publicaciones.forEach((pub) => {
+        const div = document.createElement("div");
+        div.innerHTML = `<h3>${pub.titulo}</h3><p>${pub.contenido}</p><hr/>`;
+        publicacionesDiv.appendChild(div);
+      });
+    }
 
-  <script src="script.js"></script>
+    mostrarPublicaciones();
+  </script>
 </body>
 </html>
